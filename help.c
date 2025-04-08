@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "json_c.c"  // 또는 헤더 include + 링크
+#include "json_c.c"  
 
 typedef struct {
     char name[64];
@@ -31,7 +31,7 @@ int main() {
         char* nodetype = json_get_string(json_get(node, "_nodetype"));
 
         if (strcmp(nodetype, "Decl") == 0 || strcmp(nodetype, "FuncDef") == 0) {
-            // 공통으로 type 정보 가져옴
+            
             json_value decl = node;
             if (strcmp(nodetype, "FuncDef") == 0)
                 decl = json_get(node, "decl");
@@ -42,18 +42,18 @@ int main() {
 
             function_info *f = &funcs[func_count];
 
-            // 함수 이름
+            
             char* fname = json_get_string(json_get(decl, "name"));
             if (fname)
                 strncpy(f->name, fname, sizeof(f->name));
 
-            // 리턴 타입
+            
             json_value return_type = json_get(type, "type", "type", "names", 0);
             if (json_get_type(return_type) == JSON_STRING) {
                 strncpy(f->return_type, json_get_string(return_type), sizeof(f->return_type));
             }
 
-            // 파라미터
+            
             json_value params = json_get(type, "args", "params");
             if (json_get_type(params) == JSON_ARRAY) {
                 int plen = json_len(params);
